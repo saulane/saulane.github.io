@@ -12,17 +12,13 @@ This weekend I had 3 days off, so I decided to play Factorio. While building my 
 
 Not metaphorically in the vague “everything is connected” sense. I mean quite concretely: compute units are assemblers, memory bandwidth is belts, caches are chests, batching is train scheduling, and many performance bugs are just throughput bottlenecks wearing a CUDA hoodie.
 
-Because learning is easier when you can draw lines between concepts, I decided to formalize the analogy. If you have played Factorio before and work, or plan to work, in AI/ML, you might find this post helpful. And if not, then what are you still doing here? That is a question for you to answer.
-
-## Disclaimer
-
-I used AI generated images for the factorio illustrations, that's because I am writing this on my Macbook and can't load my save to actually make figures with in-game factories. I may change the images in the future, but for now they are AI generated. I used the the new image generation model from OpenAI as of May 2026 to create these illustrations.
+Because learning is easier when you can draw lines between concepts, I decided to formalize the analogy. If you have played Factorio before and work, or plan to work, in AI/ML, you might find this post helpful. And if not,  you should take 2 weeks off and play factorio.
 
 ## What's Factorio?
 
-For those who do not know what Factorio is, it is basically a game where you land on an alien planet, mine resources, build machines, automate production, and progressively scale your factory until the factory starts to look less like a factory and more like a distributed systems incident.
+For those who do not know what Factorio is, it is a game where you land on an alien planet, mine resources, build machines, automate production, and progressively scale your factory until the factory starts to look less like a factory and more like a distributed systems incident.
 
-Factorio is famous for its capacity to make you time travel. Gift Factorio to an engineer, and they will start playing at 8am on a Saturday. The next time they look at the clock, it will be Sunday morning, their coffee will be cold, and they will be saying things like “I only need to rebalance the green circuit bus before bed.”
+Factorio is famous for its capacity to make you time travel. Gift Factorio to an engineer, they will start playing at 8am on a Saturday and the next time they look at the clock, it will be Sunday morning.
 
 The core loop is simple:
 
@@ -50,7 +46,7 @@ The naive reaction is:
 
 > “Why is my GPU slow? It has so many FLOPs.”
 
-The Factorio reaction is:
+The Factorio equivalent is:
 
 > “Are the assemblers actually busy, or are they waiting for plates?”
 
@@ -68,7 +64,7 @@ In the Dwarkesh Patel conversation, Reiner Pope explains LLM serving with a very
 The total time is controlled by the slower one:
 
 ```text
-T = max(t_compute, t_memory)
+$T = max(t_compute, t_memory)$
 ```
 
 This is the kind of equation that looks almost too simple to be useful, but it is exactly the kind of equation that becomes powerful when you use it relentlessly. In the podcast, this gets used to reason about batching, KV cache reads, long context, latency, and why serving LLMs is often a memory-bandwidth problem rather than a pure compute problem.
@@ -81,44 +77,21 @@ T = max(t_crafting, t_logistics)
 
 If crafting takes longer than delivery, your assemblers are the bottleneck. If delivery takes longer than crafting, your belts are the bottleneck.
 
-In GPU terms:
+Thus we can say:
 
 ```text
-T = max(time spent doing math, time spent moving bytes)
+T = max(time spent doing math, time spent moving bytes) = max(time spent crafting, time spent feeding the factory)
 ```
-
-In Factorio terms:
-
-```text
-T = max(time spent crafting, time spent feeding the factory)
-```
-
-![Memory-bound versus compute-bound, explained as belt-bound versus assembler-bound.](/assets/memory-bound-factorio.png)
-
-_Figure 2: Memory-bound versus compute-bound, explained as belt-bound versus assembler-bound._
-
-## The translation table
-
-Here is the analogy we will use for the rest of the post:
-
-| GPU | Factorio |
-| --- | --- |
-| Compute units | Assemblers |
-| Memory bandwidth | Belts / main bus |
-| Cache / shared memory | Local chests |
-| Operational intensity | Crafts per delivered item |
 
 ## Peak FLOP/s is the number on the assembler box
 
-Imagine you build a Factorio factory with 10,000 assemblers. You look at the crafting speed of each assembler, multiply by 10,000, and announce:
+Imagine you build a Factorio factory with 10,000 assemblers. You look at the crafting speed of each assembler, and see that each assembler can make 10,000 gears per can and announce:
 
 > “My factory can produce one billion gears per second.”
 
 If you played Factorio, you know this is nonsense. The assemblers only craft if they are fed. You also need enough iron plates, enough belts, enough inserters, enough power, enough output capacity, and enough space to route everything without turning the base into pasta.
 
 GPU peak FLOP/s is similar. It is real, but it is conditional. It tells you how fast the GPU can do math under very favorable conditions. It does not tell you whether your particular program supplies enough data, reuses that data well, accesses memory cleanly, avoids synchronization stalls, and keeps the compute units occupied.
-
-In Factorio terms:
 
 > Peak FLOP/s assumes the assemblers are perfectly fed.
 
@@ -138,41 +111,26 @@ The better question is:
 
 > “How much useful work do I get per item delivered?”
 
-In GPU language, this is called operational intensity:
+This is called operational intensity:
 
 ```text
 operational intensity = operations / bytes moved
 ```
 
-In Factorio language:
-
-```text
-factory intensity = crafts / items delivered from the main bus
-```
-
-If each item delivered from the bus enables lots of crafting, you can keep your assemblers busy. If each delivered item enables only one tiny craft, the belts become the bottleneck.
+If each item delivered from the belt enables lots of crafting, you can keep your assemblers busy. If each delivered item enables only one tiny craft, the belts become the bottleneck.
 
 This is the heart of the Roofline model. The Roofline model says that attainable performance is bounded by the smaller of two quantities: peak compute, and memory bandwidth multiplied by operational intensity. The original paper writes the idea as:
 
 ```text
 attainable performance = min(peak compute, peak memory bandwidth × operational intensity)
 ```
-
-Factorio translation:
-
-```text
-factory throughput = min(assembler speed, belt speed × crafts per delivered item)
-```
-
-This is the moment where the analogy stops being cute and starts being useful.
-
 ![The Roofline model.](/assets/roofline_model.png)
 
 _Figure 3: The Roofline model._
 
 ## A cursed recipe: vector add
 
-Take the Iron Gear recipe. It consumes two iron plates, runs for almost no time, and produces one output item. If the assembler is extremely fast, the limiting factor is not crafting. It is how quickly the belts can deliver two plates and remove the result.
+Take the Iron Gear recipe in Factorio. It consumes two iron plates, runs for less than a second, and produces one output item. If the assembler is extremely fast, the limiting factor is not crafting. It is how quickly the belts can deliver two plates and remove the result.
 
 ![iron gear recipe](/assets/iron-gear-recipe.png)
 
@@ -180,9 +138,9 @@ _Iron Gear Recipe_
 
 Vector add is exactly this cursed recipe.
 
-Let us start with one of the simplest GPU kernels:
+Let us start with one of the simplest GPU kernels, let $`a,b \in \mathbb{R}^n`$ be some vector and $`c`$ their sum:
 
-```text
+```math
 c[i] = a[i] + b[i]
 ```
 
