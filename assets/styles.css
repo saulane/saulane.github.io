@@ -359,6 +359,16 @@ pre code {
   background: transparent;
 }
 
+.math-display {
+  margin: 28px 0;
+  overflow-x: auto;
+  color: var(--ink);
+}
+
+.math-display .katex-display {
+  margin: 0;
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   padding-top: 24px;

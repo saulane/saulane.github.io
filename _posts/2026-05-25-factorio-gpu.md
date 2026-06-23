@@ -63,9 +63,9 @@ In the Dwarkesh Patel conversation, Reiner Pope explains LLM serving with a very
 
 The total time is controlled by the slower one:
 
-```text
-$T = max(t_compute, t_memory)$
-```
+$$
+T = \max(t_{\mathrm{compute}}, t_{\mathrm{memory}})
+$$
 
 This is the kind of equation that looks almost too simple to be useful, but it is exactly the kind of equation that becomes powerful when you use it relentlessly. In the podcast, this gets used to reason about batching, KV cache reads, long context, latency, and why serving LLMs is often a memory-bandwidth problem rather than a pure compute problem.
 
@@ -138,7 +138,7 @@ _Iron Gear Recipe_
 
 Vector add is exactly this cursed recipe.
 
-Let us start with one of the simplest GPU kernels, let $`a,b \in \mathbb{R}^n`$ be some vector and $`c`$ their sum:
+Let us start with one of the simplest GPU kernels, let $a,b \in \mathbb{R}^n$ be some vectors and $c$ their sum:
 
 ```math
 c[i] = a[i] + b[i]

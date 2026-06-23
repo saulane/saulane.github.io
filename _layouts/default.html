@@ -9,11 +9,36 @@
     {% if page.katex %}
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css">
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.js"></script>
-      <script
-        defer
-        src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js"
-        onload="renderMathInElement(document.querySelector('.article'), { throwOnError: false })"
-      ></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js"></script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          var article = document.querySelector(".article");
+          if (!article || !window.katex || !window.renderMathInElement) return;
+
+          article.querySelectorAll("pre > code.language-math, .language-math pre > code").forEach(function (code) {
+            var block = document.createElement("div");
+            block.className = "math-display";
+            katex.render(code.textContent.trim(), block, {
+              displayMode: true,
+              throwOnError: false
+            });
+
+            var wrapper = code.closest(".language-math.highlighter-rouge") || code.closest("pre");
+            wrapper.replaceWith(block);
+          });
+
+          renderMathInElement(article, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "\\(", right: "\\)", display: false },
+              { left: "$", right: "$", display: false }
+            ],
+            ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+            throwOnError: false
+          });
+        });
+      </script>
     {% endif %}
   </head>
   <body>

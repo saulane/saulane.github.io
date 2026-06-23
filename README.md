@@ -23,6 +23,10 @@ and CSS preserving the current warm, serif writing aesthetic.
 
 3. Write the post in Markdown. The writing index updates automatically.
 
+For math-heavy posts, add `katex: true` to the front matter. Inline math uses
+`$a^2 + b^2 = c^2$`; display math uses either `$$...$$` or a fenced `math`
+code block.
+
 ## Local Preview
 
 ```sh
