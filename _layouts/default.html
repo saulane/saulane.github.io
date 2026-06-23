@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% seo %}
+    <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}">
+    {% if page.katex %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css">
+      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.js"></script>
+      <script
+        defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.querySelector('.article'), { throwOnError: false })"
+      ></script>
+    {% endif %}
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <a class="brand" href="{{ '/' | relative_url }}"><span class="brand-mark">~/</span>simonrave</a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="{{ '/' | relative_url }}" {% if page.nav == 'home' %}aria-current="page"{% endif %}>home</a>
+          <a href="{{ '/blog.html' | relative_url }}" {% if page.nav == 'writing' %}aria-current="page"{% endif %}>writing</a>
+          <a href="{{ '/about.html' | relative_url }}" {% if page.nav == 'about' %}aria-current="page"{% endif %}>about</a>
+        </nav>
+      </header>
+
+      {{ content }}
+
+      <footer class="site-footer">
+        {% if page.layout == 'post' %}
+          <p><a href="{{ '/blog.html' | relative_url }}">back to writing</a></p>
+        {% else %}
+          <p>
+            <a href="{{ '/' | relative_url }}">home</a> /
+            <a href="{{ '/blog.html' | relative_url }}">writing</a> /
+            <a href="{{ '/about.html' | relative_url }}">about</a>
+          </p>
+        {% endif %}
+      </footer>
+    </div>
+  </body>
+</html>

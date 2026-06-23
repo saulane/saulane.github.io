@@ -1,0 +1,64 @@
+---
+layout: default
+title: "Simon Ravé"
+description: "Personal website and writing archive for Simon Ravé."
+nav: home
+---
+
+<main>
+  <section class="hero" aria-labelledby="intro-title">
+    <div>
+      <p class="kicker">research, code, notes</p>
+      <h1 id="intro-title">Simon Ravé</h1>
+      <p class="lede">
+        I am a PhD student in Computer Vision working on efficient vision
+        transformers, practical segmentation systems, and the occasional
+        idea that survived long enough to become useful.
+      </p>
+    </div>
+    <div class="portrait" aria-label="SR monogram">SR</div>
+  </section>
+
+  <section class="section split" aria-labelledby="recent-writing">
+    <p class="section-title" id="recent-writing">recent</p>
+    <div class="writing-list">
+      {% for post in site.posts limit: 2 %}
+        <article class="writing-item">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.minima.date_format }}</time>
+          <div>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p>{{ post.description }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section split" aria-labelledby="working-on">
+    <p class="section-title" id="working-on">now</p>
+    <div class="note-grid">
+      <div class="note">
+        <h3>Systems</h3>
+        <p>Reliable tools, quiet interfaces, and code that makes experiments reproducible.</p>
+      </div>
+      <div class="note">
+        <h3>Research</h3>
+        <p>Efficient transformers, semantic segmentation, and measured latency.</p>
+      </div>
+      <div class="note">
+        <h3>Writing</h3>
+        <p>Short pieces that compress what was learned into something useful.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section split" aria-labelledby="links">
+    <p class="section-title" id="links">elsewhere</p>
+    <div class="link-row">
+      <a href="https://github.com/saulane">github</a>
+      <a href="https://www.linkedin.com/in/simonrave/">linkedin</a>
+      <a href="https://arxiv.org/abs/2604.05718">latest paper</a>
+      <a href="{{ '/about.html' | relative_url }}">about</a>
+    </div>
+  </section>
+</main>

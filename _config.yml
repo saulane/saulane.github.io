@@ -1,0 +1,34 @@
+title: "Simon Ravé"
+description: "Personal website and writing archive for Simon Ravé."
+url: "https://simonrave.com"
+baseurl: ""
+lang: "en"
+timezone: "Europe/Paris"
+
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+author:
+  name: "Simon Ravé"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+minima:
+  date_format: "%b %-d, %Y"
+  hide_site_feed_link: true
+
+feed:
+  path: feed.xml
+
+exclude:
+  - deploy.sh
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

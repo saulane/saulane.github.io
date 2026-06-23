@@ -1,0 +1,32 @@
+---
+layout: default
+title: "Writing"
+description: "Writing archive for Simon Ravé."
+nav: writing
+permalink: /blog.html
+---
+
+<main>
+  <section class="hero" aria-labelledby="page-title">
+    <div>
+      <p class="kicker">archive</p>
+      <h1 id="page-title">Writing</h1>
+      <p class="lede">Notes and essays, newest first.</p>
+    </div>
+  </section>
+
+  <section class="section split" aria-labelledby="essays">
+    <p class="section-title" id="essays">posts</p>
+    <div class="writing-list">
+      {% for post in site.posts %}
+        <article class="writing-item">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.minima.date_format }}</time>
+          <div>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p>{{ post.description }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+</main>
